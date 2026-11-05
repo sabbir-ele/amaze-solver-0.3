@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Amaze GO Auto Solver</string>
+    <string name="developer_name">MD. SABBIR RAHMAN</string>
+    <string name="developer_role">App Developer &amp; Creator</string>
+    <string name="developed_by">Developed by MD. SABBIR RAHMAN</string>
+    <string name="accessibility_service_description">Enables automated arrow tapping and puzzle execution for Amaze GO!</string>
+    <string name="scan">Scan Screen</string>
+    <string name="auto_solve">Full Auto Solve</string>
+    <string name="manual_mode">Manual Guide</string>
+    <string name="stop">Emergency Stop</string>
+</resources>

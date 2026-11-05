@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">অ্যামেজ গো অটো সলভার</string>
+    <string name="developer_name">মো: সাব্বির রহমান (MD. SABBIR RAHMAN)</string>
+    <string name="developer_role">অ্যাপ ডেভেলপার ও ক্রিয়েটর</string>
+    <string name="developed_by">ডেভেলপ করেছেন মো: সাব্বির রহমান (Developed by MD. SABBIR RAHMAN)</string>
+    <string name="accessibility_service_description">অ্যামেজ গো! গেমের তীর স্বয়ংক্রিয়ভাবে ট্যাপ ও সমাধান করার অনুমতি দেয়।</string>
+    <string name="scan">স্ক্রিন স্ক্যান করুন</string>
+    <string name="auto_solve">ফুল অটো সলভ</string>
+    <string name="manual_mode">ম্যানুয়াল গাইড</string>
+    <string name="stop">জরুরী বিরতি</string>
+</resources>
