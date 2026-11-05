@@ -21,7 +21,6 @@ jobs:
 
     - name: Locate and Build APK
       run: |
-        # settings.gradle.kts যে ডিরেক্টরিতে আছে তা খুঁজে নেওয়া
         SETTINGS_FILE=$(find . -name "settings.gradle*" | head -n 1)
         if [ -z "$SETTINGS_FILE" ]; then
           echo "Error: settings.gradle not found!"
@@ -32,10 +31,14 @@ jobs:
         echo "Building inside: $PROJECT_DIR"
         cd "$PROJECT_DIR"
 
-        # রানারের প্রি-ইনস্টল্ড SDK পাথ সেট করা
+        # SDK Path
         echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-        # এক্সিকিউট পারমিশন দিয়ে গ্রেডল বিল্ড রান
+        # Enable AndroidX and Jetifier automatically
+        echo "android.useAndroidX=true" >> gradle.properties
+        echo "android.enableJetifier=true" >> gradle.properties
+
+        # Execute build
         if [ -f "./gradlew" ] && [ -f "./gradle/wrapper/gradle-wrapper.jar" ]; then
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace
