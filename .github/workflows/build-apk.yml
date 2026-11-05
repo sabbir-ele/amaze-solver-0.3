@@ -19,30 +19,33 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Install Compatible Gradle
       run: |
         wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip
         unzip -q gradle-8.7-bin.zip
         echo "$GITHUB_WORKSPACE/gradle-8.7/bin" >> $GITHUB_PATH
 
-    - name: Build Debug APK
+    - name: Locate and Build APK
       run: |
-        if [ -f "./build.gradle.kts" ] || [ -f "./build.gradle" ]; then
-          TARGET_DIR="."
-        elif [ -f "./AmazeGoAutoSolver/build.gradle.kts" ] || [ -f "./AmazeGoAutoSolver/build.gradle" ]; then
-          TARGET_DIR="./AmazeGoAutoSolver"
-        else
-          TARGET_DIR=$(dirname $(find . -name "settings.gradle.kts" | head -n 1))
+        # find directory containing settings.gradle or settings.gradle.kts
+        SETTINGS_FILE=$(find . -name "settings.gradle*" | head -n 1)
+        if [ -z "$SETTINGS_FILE" ]; then
+          echo "Error: settings.gradle not found!"
+          exit 1
         fi
         
-        cd "$TARGET_DIR"
-        chmod +x ./gradlew 2>/dev/null || true
+        PROJECT_DIR=$(dirname "$SETTINGS_FILE")
+        echo "Found project directory at: $PROJECT_DIR"
+        cd "$PROJECT_DIR"
         
-        if [ -f "./gradlew" ] && [ -f "./gradle/wrapper/gradle-wrapper.jar" ]; then
-          ./gradlew assembleDebug --no-daemon --stacktrace
-        else
-          gradle-8.7/bin/gradle assembleDebug --no-daemon --stacktrace
-        fi
+        # ensure local.properties points to SDK
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+        # build using installed Gradle 8.7
+        gradle assembleDebug --no-daemon --stacktrace
 
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
