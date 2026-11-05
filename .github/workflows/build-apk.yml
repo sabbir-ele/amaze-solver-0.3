@@ -14,38 +14,34 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Install Compatible Gradle
-      run: |
-        wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip
-        unzip -q gradle-8.7-bin.zip
-        echo "$GITHUB_WORKSPACE/gradle-8.7/bin" >> $GITHUB_PATH
-
     - name: Locate and Build APK
       run: |
-        # find directory containing settings.gradle or settings.gradle.kts
+        # settings.gradle.kts যে ডিরেক্টরিতে আছে তা খুঁজে নেওয়া
         SETTINGS_FILE=$(find . -name "settings.gradle*" | head -n 1)
         if [ -z "$SETTINGS_FILE" ]; then
           echo "Error: settings.gradle not found!"
           exit 1
         fi
-        
+
         PROJECT_DIR=$(dirname "$SETTINGS_FILE")
-        echo "Found project directory at: $PROJECT_DIR"
+        echo "Building inside: $PROJECT_DIR"
         cd "$PROJECT_DIR"
-        
-        # ensure local.properties points to SDK
+
+        # রানারের প্রি-ইনস্টল্ড SDK পাথ সেট করা
         echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-        # build using installed Gradle 8.7
-        gradle assembleDebug --no-daemon --stacktrace
+        # এক্সিকিউট পারমিশন দিয়ে গ্রেডল বিল্ড রান
+        if [ -f "./gradlew" ] && [ -f "./gradle/wrapper/gradle-wrapper.jar" ]; then
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+        else
+          gradle assembleDebug --no-daemon --stacktrace
+        fi
 
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
