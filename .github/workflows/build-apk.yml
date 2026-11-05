@@ -1,0 +1,48 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Build Debug APK
+      run: |
+        if [ -f "./build.gradle.kts" ] || [ -f "./build.gradle" ]; then
+          TARGET_DIR="."
+        elif [ -f "./AmazeGoAutoSolver/build.gradle.kts" ] || [ -f "./AmazeGoAutoSolver/build.gradle" ]; then
+          TARGET_DIR="./AmazeGoAutoSolver"
+        else
+          TARGET_DIR=$(dirname $(find . -name "settings.gradle.kts" | head -n 1))
+        fi
+        
+        cd "$TARGET_DIR"
+        chmod +x ./gradlew 2>/dev/null || true
+        
+        if [ -f "./gradlew" ] && [ -f "./gradle/wrapper/gradle-wrapper.jar" ]; then
+          ./gradlew assembleDebug --stacktrace
+        else
+          gradle assembleDebug --stacktrace
+        fi
+
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Amaze-GO-Solver-APK
+        path: "**/build/outputs/apk/debug/*.apk"
