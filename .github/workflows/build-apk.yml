@@ -19,7 +19,13 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Build APK
+    - name: Install Standalone Gradle 8.7
+      run: |
+        wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip
+        unzip -q gradle-8.7-bin.zip
+        echo "$GITHUB_WORKSPACE/gradle-8.7/bin" >> $GITHUB_PATH
+
+    - name: Build APK without Wrapper JAR
       run: |
         SETTINGS_FILE=$(find . -name "settings.gradle*" | head -n 1)
         PROJECT_DIR=$(dirname "$SETTINGS_FILE")
@@ -29,8 +35,7 @@ jobs:
         echo "android.useAndroidX=true" > gradle.properties
         echo "android.enableJetifier=false" >> gradle.properties
 
-        chmod +x ./gradlew 2>/dev/null || true
-        ./gradlew assembleDebug --no-daemon --stacktrace
+        gradle assembleDebug --no-daemon --stacktrace
 
     - name: Upload Finished APK
       uses: actions/upload-artifact@v4
