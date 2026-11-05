@@ -1,15 +1,1 @@
-- name: Build Debug APK
-      run: |
-        if [ -f "./build.gradle.kts" ] || [ -f "./build.gradle" ]; then
-          TARGET_DIR="."
-        elif [ -f "./AmazeGoAutoSolver/build.gradle.kts" ] || [ -f "./AmazeGoAutoSolver/build.gradle" ]; then
-          TARGET_DIR="./AmazeGoAutoSolver"
-        else
-          TARGET_DIR=$(dirname $(find . -name "settings.gradle.kts" | head -n 1))
-        fi
-        
-        cd "$TARGET_DIR"
-        chmod +x ./gradlew 2>/dev/null || true
-        
-        # Build with full exception stacktrace to identify exact error line
-        ./gradlew assembleDebug --stacktrace --info || gradle assembleDebug --stacktrace --info
+a
